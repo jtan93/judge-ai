@@ -1,12 +1,29 @@
-// --- Firebase Configuration (보안을 위해 초기값은 비워둡니다) ---
+// ============================================================
+// 🔧 [관리자 설정] 서비스 운영을 위한 기본 키 설정
+// ============================================================
+const DEFAULT_GEMINI_API_KEY = 'AIzaSyAhY9r1gGZXbsCea9f0RRlFvTRmdMkoX4g';
+const DEFAULT_FIREBASE_CONFIG = {
+    apiKey: "AIzaSyDmnHwcyGhUf-vIMSoFa7pdPTdViyypVZw",
+    authDomain: "my-fist-anti.firebaseapp.com",
+    projectId: "my-fist-anti",
+    storageBucket: "my-fist-anti.firebasestorage.app",
+    messagingSenderId: "963114529490",
+    appId: "1:963114529490:web:37ee2457290ead9fb1730b"
+};
+// ============================================================
+
+// --- Firebase Configuration (localStorage 우선, 없으면 기본값 사용) ---
 let firebaseConfig = null;
 try {
     const savedConfig = localStorage.getItem('firebase_config');
     if (savedConfig) {
         firebaseConfig = JSON.parse(savedConfig);
     }
-} catch (e) {
-    console.error("❌ [보안] 저장된 Firebase 설정을 읽어오는데 실패했습니다.");
+} catch (e) { /* 무시 */ }
+
+// localStorage에 없으면 기본값 사용
+if (!firebaseConfig && DEFAULT_FIREBASE_CONFIG && DEFAULT_FIREBASE_CONFIG.apiKey) {
+    firebaseConfig = DEFAULT_FIREBASE_CONFIG;
 }
 
 // Initialize Firebase (Compat)
@@ -18,16 +35,16 @@ function initializeFirebaseApp(config) {
     if (!config) return false;
     try {
         if (firebase.apps.length > 0) {
-            firebase.app().delete(); // 기존 앱 삭제 후 재초기화
+            firebase.app().delete();
         }
         firebase.initializeApp(config);
         db = firebase.firestore();
         serverTimestamp = firebase.firestore.FieldValue.serverTimestamp;
         increment = firebase.firestore.FieldValue.increment;
-        console.log("✅ [보안] Firebase가 안전하게 초기화되었습니다.");
+        console.log("✅ Firebase가 초기화되었습니다.");
         return true;
     } catch (e) {
-        console.error("❌ [보안] Firebase 초기화 오류:", e);
+        console.error("❌ Firebase 초기화 오류:", e);
         return false;
     }
 }
@@ -107,11 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 1. Unified Settings Management (Gemini & Firebase)
-    let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
+    // localStorage에 값이 있으면 그것을 사용, 없으면 코드에 내장된 기본값 사용
+    let geminiApiKey = localStorage.getItem('gemini_api_key') || DEFAULT_GEMINI_API_KEY || '';
     
-    // UI 초기 상태 반영
-    if (geminiApiKey) {
-        apiKeyBtn.textContent = '⚙️ 설정 변경';
+    // UI 초기 상태 반영 (설정 버튼은 숨김 처리 - 로고 5번 클릭으로만 접근)
+    if (apiKeyBtn) apiKeyBtn.style.display = 'none'; // 일반 사용자에게 설정 버튼 감추기
+    if (geminiApiKey && apiKeyInput) {
         apiKeyInput.value = geminiApiKey;
     }
     const savedFirebase = localStorage.getItem('firebase_config');
@@ -210,9 +228,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (!geminiApiKey) {
-                alert('Google Gemini API 키가 필요합니다. 로고를 5번 클릭하여 키를 입력해주세요.');
-                apiModal.classList.remove('hidden');
+            if (!geminiApiKey || geminiApiKey === 'YOUR_GEMINI_API_KEY_HERE') {
+                alert('서비스 준비 중입니다. 잠시 후 다시 시도해 주세요.');
                 return;
             }
 
