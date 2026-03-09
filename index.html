@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>판결해줘! AI</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for modern brutalist typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="site-wrapper">
+        <header>
+            <div class="logo" id="main-logo" style="cursor: pointer;">판결해줘! AI</div>
+            <div class="header-right">
+                <button id="api-key-btn" class="nav-btn hidden">⚙️ API 키 설정</button>
+            </div>
+        </header>
+
+        <main class="main-layout">
+            <div class="split-container">
+                <!-- Left Side: Title and Hot Topics -->
+                <div class="left-section">
+                    <section class="hero-section">
+                        <h1 class="main-title">
+                            <span class="title-line">누구의 잘못인가?</span>
+                            <span class="title-line highlight-text">AI 판사가</span>
+                            <span class="title-line">결정해 드립니다.</span>
+                        </h1>
+                        <p class="subtitle">사소한 말다툼부터 심각한 고민까지. 공정하고 냉철하게 판결합니다.</p>
+                    </section>
+                    
+                    <!-- 핫한 논쟁 주제 -->
+                    <div class="hot-topics">
+                        <h3>요즘 핫한 논쟁 주제 🔥</h3>
+                        <div class="topic-buttons">
+                            <button class="topic-btn" data-topic="어제 친구랑 피자를 먹는데 제 허락 없이 파인애플 토핑을 몽땅 올렸습니다. 이거 절교 사유 아닌가요?">🍍 파인애플 피자 논쟁</button>
+                            <button class="topic-btn" data-topic="애인이 제 절친의 깻잎을 두 장 떼어주는 걸 도와줬습니다. 이거 바람 아닌가요?">🍃 깻잎 논쟁</button>
+                            <button class="topic-btn" data-topic="직장 동료 결혼식, 별로 친하지도 않은데 축의금 5만원 내면 욕먹을까요?">💸 축의금 5만원 논쟁</button>
+                            <button class="topic-btn" data-topic="추운 겨울, 애인이 제 앞에서 다른 이성의 패딩 지퍼를 올려주었습니다. 이해해야 하나요?">🧥 패딩 지퍼 논쟁</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Input Box -->
+                <div class="right-section">
+                    <section class="input-section">
+                        <div class="input-wrapper large-rounded">
+                            <label for="conflict-text" class="input-label">사건의 전말을 상세히 적어주세요</label>
+                            <textarea id="conflict-text" placeholder="예: 고민이나 다툼 내용을 여기에 자유롭게 적어주세요..." rows="12"></textarea>
+                            
+                            <div class="action-wrapper-centered">
+                                <button id="submit-btn" class="submit-btn action-center-btn">
+                                    <span class="btn-text">판결받기</span>
+                                    <span class="btn-arrow">→</span>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- 결과 오버레이 (모달 팝업) -->
+            <div id="result-overlay" class="result-overlay hidden">
+                <div class="result-card-container" id="result-card-container">
+                    <button id="close-result-btn" class="close-result-btn">&times;</button>
+                    
+                    <div class="result-header">
+                        <span class="delivered-badge">NEW JUDGMENT</span>
+                        <h2>AI 판결문</h2>
+                        <span class="date-stamp" id="current-date"></span>
+                    </div>
+                
+                    <div class="result-content card-news-style" id="card-news-container">
+                        <div id="judgment-text" class="judgment-text"></div>
+                    </div>
+
+                    <div id="share-section" class="share-section">
+                        <button class="share-btn" id="copy-link-btn">🔗 링크 복사</button>
+                        <button class="share-btn kakao-btn" id="kakao-share-btn">💬 카톡 공유</button>
+                    </div>
+                    
+                    <div id="vote-section" class="vote-section">
+                        <div class="vote-title-container">
+                            <div class="vote-title">📝 대중의 시선은?</div>
+                        </div>
+                        <div class="vote-buttons-container">
+                            <button class="vote-btn" id="vote-a-btn">
+                                <span class="vote-label">A측 잘못</span>
+                                <span class="vote-count" id="count-a">0</span>
+                            </button>
+                            <div class="vote-vs">VS</div>
+                            <button class="vote-btn" id="vote-b-btn">
+                                <span class="vote-label">B측 잘못</span>
+                                <span class="vote-count" id="count-b">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="reset-section">
+                        <button class="reset-btn" id="retry-btn">다시 판결받기</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 다른 사람들의 고민 피드 -->
+            <section class="feed-section">
+                <h2 class="feed-title">👀 실시간 다른 사람들의 고민</h2>
+                <div class="feed-container" id="mock-feed-container">
+                    <!-- Javascript가 여기에 Mock 데이터를 렌더링합니다 -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-left">
+                <span>판결해줘! AI &copy; 2026</span>
+            </div>
+            <div class="footer-center">
+                <button class="partnership-btn" id="partnership-open-btn">🤝 제휴 문의하기</button>
+            </div>
+            <div class="footer-right">
+                <button class="scroll-top-btn" id="scroll-top-btn">↑</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Digital Scanning Loading Overlay (새로 변경됨) -->
+    <div id="hammer-overlay" class="hammer-overlay hidden">
+        <div class="scan-container">
+            <div class="scan-hud">
+                <div class="scan-line"></div>
+                <div class="scan-content">
+                    <div class="scan-icon" id="hammer-icon">🧠</div>
+                    <div class="data-particles">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="hammer-text" id="scan-status-text">다툼의 전말을 디지털화하는 중...</div>
+            <div class="scanning-stats">
+                <span class="stat-item">DEPTH: 2.5B PARAM</span>
+                <span class="stat-item">LOGIC: 99.8%</span>
+                <span class="stat-item">PRECEDENT: SEARCHING...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Partnership Inquiry Modal (New) -->
+    <div id="partnership-modal" class="modal hidden">
+        <div class="modal-content partnership-content">
+            <div class="modal-header">
+                <h2>🤝 제휴 및 비즈니스 문의</h2>
+                <button id="close-partnership-modal" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>서비스 제휴 및 협업 문의를 남겨주세요. 꼼꼼히 검토 후 연락드리겠습니다.</p>
+                <form action="https://formspree.io/f/xkoqnygq" method="POST" id="partnership-form">
+                    <div class="form-group">
+                        <label>성함 / 회사명</label>
+                        <input type="text" name="name" placeholder="홍길동 / 판결컴퍼니" required>
+                    </div>
+                    <div class="form-group">
+                        <label>회신받을 이메일</label>
+                        <input type="email" name="email" placeholder="example@domain.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>문의 내용</label>
+                        <textarea name="message" rows="5" placeholder="제휴 제안 내용을 자유롭게 적어주세요..." required></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="save-btn send-btn">문의 보내기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal (Gemini & Firebase) -->
+    <div id="api-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ 서비스 환경 설정</h2>
+                <button id="close-modal" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <section class="settings-section">
+                    <h3>💎 Google Gemini API</h3>
+                    <p>판결을 내리기 위해 필요한 키입니다. 발급받은 키를 입력해 주세요.</p>
+                    <input type="password" id="api-key-input" placeholder="AIzaSy...">
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="link-btn">🔑 키 발급받기</a>
+                </section>
+
+                <section class="settings-section" style="margin-top: 20px; border-top: 1px dashed #ddd; padding-top: 15px;">
+                    <h3>🔥 Firebase 프로젝트 설정</h3>
+                    <p>실시간 피드 연동을 위한 Config(JSON)를 입력해 주세요.</p>
+                    <textarea id="firebase-config-input" rows="6" placeholder='{ "apiKey": "...", "projectId": "...", ... }' style="width: 100%; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px;"></textarea>
+                </section>
+
+                <div class="modal-actions" style="margin-top: 20px;">
+                    <button id="save-key-btn" class="save-btn" style="width: 100%;">🛡️ 모든 설정 안전하게 저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (v10 Compat for file:/// support) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script src="app.js"></script>
+</body>
+</html>
