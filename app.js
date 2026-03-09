@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const urlResult = await getGeminiUrl(geminiApiKey);
                 const streamUrl = urlResult.replace(':generateContent', ':streamGenerateContent');
-                const prompt = `당신은 공정하고 위트있는 '인공지능 판사'입니다. 다음 형식을 지켜서 답변해주세요: **[사건 요약]**, **[판사 AI의 시선]**, **[최종 판결]**, **[처방 및 권고조치]**. 사용자 입력: "${text}"`;
+                const prompt = `너는 20년 경력의 냉철한 AI 판사야. 서론 빼고 최대한 짧고 간결하게 판결해. 답변이 절대 5~6문장을 넘지 않도록 해. 말투는 무례하지 않지만 반박 불가한 '팩트 폭격기' 컨셉이야.\n\n**[판결 요약]**: (한 문장으로 누가 잘못했는지 결론만)\n**[팩트 폭격]**: (왜 잘못했는지 논리적으로 뼈 때리는 이유 2가지)\n**[처방전]**: (앞으로 어떻게 해야 할지 짧은 조언)\n\n사용자 입력: "${text}"`;
 
                 console.log("🚀 [Gemini] 스트리밍 판결 요청 중...");
                 
